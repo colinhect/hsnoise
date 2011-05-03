@@ -1,3 +1,6 @@
+-- Copyright (c) 2011, Colin Hill
+-- Loosely based on implementation of Libnoise (libnoise.sourceforge.net)
+
 module Noise (
     Point,
     Seed,
@@ -16,13 +19,13 @@ type Seed = Int
 
 -- | Class of noise functions.
 class Noise a where
-    -- | Maps 3-space points to a noise value for the given noise function.
-    noise :: a -> Point -> Double
+    -- | Maps 3-space points to a noise value between -1 and 1 for the given noise function.
+    noiseValue :: a -> Point -> Double
 
--- | Returns coherent noise given a seed and a point in 3-space.
+-- | Returns a coherent noise value between -1 and 1 given a seed and a point in 3-space.
 coherentNoise :: Seed -> Point -> Double
 coherentNoise seed (x, y, z) = max (-1.0) (min 1.0 (lerp sz iy0 iy1))
-    where (ox, oy, oz) = (makeInt32Range x, makeInt32Range y, makeInt32Range z)
+    where (ox, oy, oz) = (clampToIntRange x, clampToIntRange y, clampToIntRange z)
           x0           = if ox > 0.0 then floor ox else floor ox - 1
           x1           = x0 + 1
           y0           = if oy > 0.0 then floor oy else floor oy - 1
@@ -47,6 +50,8 @@ coherentNoise seed (x, y, z) = max (-1.0) (min 1.0 (lerp sz iy0 iy1))
           ix1'         = lerp sx n0''' n1'''
           iy1          = lerp sy ix0' ix1'
 
+-- | Returns a gradient noise value given a seed, a point in 3-space, and a nearby integer
+-- point in 3-space.
 gradientNoise :: Seed -> Double -> Double -> Double -> Int -> Int -> Int -> Double
 gradientNoise seed fx fy fz ix iy iz = 2.12 * (gx * ox + gy * oy + gz * oz)
     where (gx, gy, gz) = (vectorTable ! (shiftL i 2),
@@ -58,23 +63,28 @@ gradientNoise seed fx fy fz ix iy iz = 2.12 * (gx * ox + gy * oy + gz * oz)
           i            = (i' `xor` (shiftR i' 8)) .&. 0xff
           i'           = (1619 * ix + 31337 * iy + 6971 * iz + 1013 * seed) .&. 0xffffffff
 
+-- | Returns the linearly interpolated value between two values given a delta.
 lerp :: Double -> Double -> Double -> Double
 lerp t a b = (1.0 - t) * a + t * b
 
+-- | Maps a value onto a quintic s-curve.
 scurve :: Double -> Double
 scurve a = (6.0 * a5) - (15.0 * a4) + (10.0 * a3)
     where a3 = a * a * a
           a4 = a3 * a
           a5 = a4 * a
 
-makeInt32Range :: Double -> Double
-makeInt32Range n | n >=   1073741824.0  = 2.0 * (fmod n 1073741824.0) - 1073741824.0
-                 | n <= (-1073741824.0) = 2.0 * (fmod n 1073741824.0) + 1073741824.0
-                 | otherwise            = n
+-- | Clamps a 'Double' to the range of a 32 bit 'Int'.
+clampToIntRange :: Double -> Double
+clampToIntRange n | n >=   1073741824.0  = 2.0 * (fmod n 1073741824.0) - 1073741824.0
+                  | n <= (-1073741824.0) = 2.0 * (fmod n 1073741824.0) + 1073741824.0
+                  | otherwise            = n
 
+-- | Floating point modulus function.
 fmod :: Double -> Double -> Double
 fmod x y = x - fromIntegral (floor (x / y)) * y
 
+-- | Table of random normalized vectors.
 vectorTable :: Vector Double
 vectorTable = fromList [
     -0.763874, -0.596439, -0.246489, 0.0,

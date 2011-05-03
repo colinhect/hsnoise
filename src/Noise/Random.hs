@@ -1,3 +1,5 @@
+-- Copyright (c) 2011, Colin Hill
+
 module Noise.Random (
     randomInt,
     randomInts,

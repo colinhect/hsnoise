@@ -13,11 +13,10 @@ maintainer:         Colin Hill <colin.james.hill@gmail.com>
 stability:          Experimental
 
 homepage:
-package-url:
-bug-reports:
 
 synopsis:           A coherent 3d noise library.
-description: 
+description:        .
+                     
 category:           Noise
 
 library
@@ -27,5 +26,5 @@ library
         Noise.Random 
     build-depends:      AC-PPM -any, base -any, vector -any
     ghc-options:        -O2
-    hs-source-dirs:        src
+    hs-source-dirs:     src
  
