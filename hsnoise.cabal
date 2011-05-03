@@ -6,25 +6,34 @@ build-type:         Simple
 
 license:            BSD3
 license-file:       LICENSE
-copyright:          Copyright 2011, Colin Hill
+copyright:          Copyright (c) 2011, Colin Hill
 author:             Colin Hill <colin.james.hill@gmail.com>
 maintainer:         Colin Hill <colin.james.hill@gmail.com>
 
 stability:          Experimental
 
-homepage:
+homepage:           <https://github.com/colinhect/hsnoise>
 
 synopsis:           A coherent 3d noise library.
-description:        .
-                     
+
+description:        A coherent 3d noise library loosely based on libnoise.  Currently has an
+                    implementation of perlin noise.  Will eventually support other noise
+                    types as well as noise function combinations.
+                    .
+                    Code examples included in package.
+                    .
+                    Example of Perlin noise output image: <http://i.imgur.com/cPOZ2.png>
+                    .
+
 category:           Noise
+
+extra-source-files: examples/Perlin.hs
 
 library
     exposed-modules:
         Noise
         Noise.Perlin
         Noise.Random 
-    build-depends:      AC-PPM -any, base -any, vector -any
+    build-depends:      AC-PPM -any, base >= 2 && < 4, vector -any
     ghc-options:        -O2
     hs-source-dirs:     src
- 
