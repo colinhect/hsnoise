@@ -1,11 +1,12 @@
 -- Copyright (c) 2011, Colin Hill
 
-module Noise.Perlin (
+-- | Implementation of Perlin noise.
+module Numeric.Noise.Perlin (
     Perlin(..),
     noiseValue
 ) where
 
-import Noise
+import Numeric.Noise
 
 -- | Perlin noise function.
 data Perlin =

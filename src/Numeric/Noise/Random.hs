@@ -1,12 +1,13 @@
 -- Copyright (c) 2011, Colin Hill
 
-module Noise.Random (
+-- | A simple implementation of a pure linear congruential psuedo-random number generator.
+module Numeric.Noise.Random (
     randomInt,
     randomInts,
     shuffle
 ) where
 
-import Noise
+import Numeric.Noise
 
 import Data.Bits
 
