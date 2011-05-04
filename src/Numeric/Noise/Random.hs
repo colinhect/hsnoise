@@ -37,4 +37,4 @@ shuffle' :: [a] -> [a] -> Seed -> ([a], Seed)
 shuffle' [] acc seed = (acc, seed)
 shuffle' xs acc seed = shuffle' (h ++ ys) (y:acc) seed'
     where (seed', r) = randomInt seed
-          (h, y:ys)  = splitAt (r `mod` (length xs)) xs
+          (h, y:ys)  = splitAt (r `mod` length xs) xs

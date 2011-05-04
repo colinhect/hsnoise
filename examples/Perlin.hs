@@ -1,9 +1,9 @@
-module Perlin where
+module Main where
 
-import Noise.Perlin
+import Numeric.Noise.Perlin
 
 import Codec.PPM.Binary
-import Data.Word
+import Data.Word (Word8)
 
 main = do
     -- The size of the resulting image.
@@ -16,11 +16,11 @@ main = do
     let persistance = 0.5
 
     -- Create the perlin function.
-    let perlin = Perlin seed octaves scale persistance    
+    let perlinNoise = perlin seed octaves scale persistance    
 
     -- Compute the noise value for each pixel in the image.
     let coords = [1.0..fromInteger size]
-    let xs = [noiseValue perlin (x, y, 0) | y <- coords, x <- coords]
+    let xs = [noiseValue perlinNoise (x, y, 0) | y <- coords, x <- coords]
     
     -- Convert the noise values to grayscale colors.
     let ps = map noiseToColor xs

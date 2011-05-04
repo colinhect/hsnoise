@@ -6,7 +6,8 @@
 module Numeric.Noise (
     Point,
     Seed,
-    Noise(..),
+    Noise(noiseValue),
+    clamp,
     coherentNoise
 ) where
 
@@ -24,9 +25,13 @@ class Noise a where
     -- | Maps 3-space points to a noise value between -1 and 1 for the given noise function.
     noiseValue :: a -> Point -> Double
 
+-- | Returns a clamped value between a min and max value.
+clamp :: Ord a => a -> a -> a -> a
+clamp v m m' = max m (min m' v)
+
 -- | Returns a coherent noise value between -1 and 1 given a seed and a point in 3-space.
 coherentNoise :: Seed -> Point -> Double
-coherentNoise seed (x, y, z) = max (-1.0) (min 1.0 (lerp sz iy0 iy1))
+coherentNoise seed (x, y, z) = clamp noise (-1) 1
     where (ox, oy, oz) = (clampToIntRange x, clampToIntRange y, clampToIntRange z)
           x0           = if ox > 0.0 then floor ox else floor ox - 1
           x1           = x0 + 1
@@ -39,30 +44,31 @@ coherentNoise seed (x, y, z) = max (-1.0) (min 1.0 (lerp sz iy0 iy1))
           sz           = scurve (oz - fromIntegral z0)
           n0           = gradientNoise seed ox oy oz x0 y0 z0
           n1           = gradientNoise seed ox oy oz x1 y0 z0
+          n2           = gradientNoise seed ox oy oz x0 y1 z0
+          n3           = gradientNoise seed ox oy oz x1 y1 z0
+          n4           = gradientNoise seed ox oy oz x0 y0 z1
+          n5           = gradientNoise seed ox oy oz x1 y0 z1
+          n6           = gradientNoise seed ox oy oz x0 y1 z1
+          n7           = gradientNoise seed ox oy oz x1 y1 z1
           ix0          = lerp sx n0 n1
-          n0'          = gradientNoise seed ox oy oz x0 y1 z0
-          n1'          = gradientNoise seed ox oy oz x1 y1 z0
-          ix1          = lerp sx n0' n1'
+          ix1          = lerp sx n2 n3
+          ix2          = lerp sx n4 n5
+          ix3          = lerp sx n6 n7
           iy0          = lerp sy ix0 ix1
-          n0''         = gradientNoise seed ox oy oz x0 y0 z1
-          n1''         = gradientNoise seed ox oy oz x1 y0 z1
-          ix0'         = lerp sx n0'' n1''
-          n0'''        = gradientNoise seed ox oy oz x0 y1 z1
-          n1'''        = gradientNoise seed ox oy oz x1 y1 z1
-          ix1'         = lerp sx n0''' n1'''
-          iy1          = lerp sy ix0' ix1'
+          iy1          = lerp sy ix2 ix3
+          noise        = lerp sz iy0 iy1
 
 -- | Returns a gradient noise value given a seed, a point in 3-space, and a nearby integer
 -- point in 3-space.
 gradientNoise :: Seed -> Double -> Double -> Double -> Int -> Int -> Int -> Double
 gradientNoise seed fx fy fz ix iy iz = 2.12 * (gx * ox + gy * oy + gz * oz)
-    where (gx, gy, gz) = (vectorTable ! (shiftL i 2),
-                          vectorTable ! ((shiftL i 2) + 1),
-                          vectorTable ! ((shiftL i 2) + 2))
+    where (gx, gy, gz) = (vectorTable ! shiftL i 2,
+                          vectorTable ! (shiftL i 2 + 1),
+                          vectorTable ! (shiftL i 2 + 2))
           (ox, oy, oz) = (fx - fromIntegral ix,
                           fy - fromIntegral iy,
                           fz - fromIntegral iz)
-          i            = (i' `xor` (shiftR i' 8)) .&. 0xff
+          i            = (i' `xor` shiftR i' 8) .&. 0xff
           i'           = (1619 * ix + 31337 * iy + 6971 * iz + 1013 * seed) .&. 0xffffffff
 
 -- | Returns the linearly interpolated value between two values given a delta.
@@ -76,15 +82,16 @@ scurve a = (6.0 * a5) - (15.0 * a4) + (10.0 * a3)
           a4 = a3 * a
           a5 = a4 * a
 
--- | Clamps a 'Double' to the range of a 32 bit 'Int'.
+-- | Clamps a 'Double' to the range of an 'Int'.
 clampToIntRange :: Double -> Double
-clampToIntRange n | n >=   1073741824.0  = 2.0 * (fmod n 1073741824.0) - 1073741824.0
-                  | n <= (-1073741824.0) = 2.0 * (fmod n 1073741824.0) + 1073741824.0
+clampToIntRange n | n >= maxInt    = 2.0 * fmod n maxInt - maxInt
+                  | n <= (-maxInt) = 2.0 * fmod n maxInt + maxInt
                   | otherwise            = n
+    where maxInt = 1073741824.0 -- Max 32 bit signed Int.  Should not be hardcoded.
 
 -- | Floating point modulus function.
 fmod :: Double -> Double -> Double
-fmod x y = x - fromIntegral (floor (x / y)) * y
+fmod x y = x - fromIntegral (floor (x / y) :: Int) * y
 
 -- | Table of random normalized vectors.
 vectorTable :: Vector Double
