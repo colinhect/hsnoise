@@ -9,6 +9,7 @@ module Numeric.Noise (
     Point,
     Seed,
     Noise(noiseValue),
+    pmap,
     clamp,
     coherentNoise
 ) where
@@ -26,6 +27,10 @@ type Seed = Int
 class Noise a where
     -- | Maps 3-space points to a noise value between -1 and 1 for the given noise function.
     noiseValue :: a -> Point -> Double
+
+-- | Map a function on a 'Point'.
+pmap :: (Double -> Double) -> Point -> Point
+pmap f (x, y, z) = (f x, f y, f z)
 
 -- | Returns a clamped value between a min and max value.
 clamp :: Ord a => a -> a -> a -> a

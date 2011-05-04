@@ -1,6 +1,9 @@
 -- Copyright (c) 2011, Colin Hill
 
 -- | A simple implementation of a pure linear congruential psuedo-random number generator.
+--
+-- Example of use:
+--
 module Numeric.Noise.Random (
     randomInt,
     randomInts,

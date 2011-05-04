@@ -14,7 +14,7 @@ main = do
     let octaves = 5
     let scale = 0.05
     let frequency = 1
-    let lacunarity = 3.5
+    let lacunarity = 2
 
     -- Create the ridged multi-fractal function.
     let ridgedNoise = ridged seed octaves scale frequency lacunarity 
@@ -22,6 +22,9 @@ main = do
     -- Compute the noise value for each pixel in the image.
     let coords = [1.0..fromInteger size]
     let xs = [noiseValue ridgedNoise (x, y, 0) | y <- coords, x <- coords]
+
+    putStrLn (show (maximum xs))
+    putStrLn (show (minimum xs))
     
     -- Convert the noise values to grayscale colors.
     let ps = map noiseToColor xs
