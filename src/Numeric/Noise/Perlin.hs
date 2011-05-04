@@ -31,7 +31,7 @@ instance Noise Perlin where
 
 -- | Constructs a Perlin noise function given a 'Seed', number of octaves, scale, and persistance.
 perlin :: Seed -> Int -> Double -> Double -> Perlin
-perlin seed octaves scale pers = Perlin seed octaves scale pers
+perlin = Perlin
 
 -- | Evaluates a given number of octaves of perlin noise holding the total noise value, frequency
 -- and amplitude in the arguments.

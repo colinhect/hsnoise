@@ -1,5 +1,7 @@
 -- Copyright (c) 2011, Colin Hill
--- Loosely based on implementation of Libnoise (libnoise.sourceforge.net)
+--
+-- Loosely based on implementation of libnoise by Jason Bevins Copyright (C) 2003, 2004
+-- http://libnoise.sourceforge.net
 
 -- | Contains 'Noise' class as well as a general coherent noise generating function which
 -- the specific noise implementations are based on.
