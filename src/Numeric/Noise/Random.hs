@@ -4,6 +4,16 @@
 --
 -- Example of use:
 --
+-- @
+--main = do
+--    let seed = 1
+--    let (r, seed') = randomInt seed
+--    putStrLn (\"Random number 1: \" ++ show r)
+--    let (r', seed'') = randomInt seed'
+--    putStrLn (\"Random number 2: \" ++ show r')
+--    putStrLn (\"Random int list: \" ++ show (randomInts 10 seed))
+--    putStrLn (\"Shuffled list: \" ++ show (shuffle [1..10] seed))
+-- @
 module Numeric.Noise.Random (
     randomInt,
     randomInts,

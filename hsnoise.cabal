@@ -1,5 +1,5 @@
 name:               hsnoise
-version:            0.0.1
+version:            0.0.2
 
 cabal-version:      >= 1.2.3
 build-type:         Simple
@@ -17,8 +17,8 @@ homepage:           https://github.com/colinhect/hsnoise
 synopsis:           A coherent 3d noise library.
 
 description:        A coherent 3d noise library loosely based on libnoise.  Currently has an
-                    implementation of perlin noise.  Will eventually support other noise
-                    types as well as noise function combinations.
+                    implementation of Perlin noise and ridged multi-fractal noise.  Will 
+                    eventually support other noise types as well as noise function combinations.
                     .
                     Code examples included in package.
                     .
@@ -27,7 +27,7 @@ description:        A coherent 3d noise library loosely based on libnoise.  Curr
 
 category:           Noise
 
-extra-source-files: examples/Perlin.hs
+extra-source-files: examples/Perlin.hs, examples/Ridged.hs
 
 library
     exposed-modules:    Numeric.Noise, Numeric.Noise.Perlin, Numeric.Noise.Random,
