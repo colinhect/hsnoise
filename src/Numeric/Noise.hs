@@ -40,11 +40,11 @@ clamp v m m' = max m (min m' v)
 coherentNoise :: Seed -> Point -> Double
 coherentNoise seed (x, y, z) = clamp noise (-1) 1
     where (ox, oy, oz) = (clampToIntRange x, clampToIntRange y, clampToIntRange z)
-          x0           = if ox > 0.0 then floor ox else floor ox - 1
+          x0           = floor ox
           x1           = x0 + 1
-          y0           = if oy > 0.0 then floor oy else floor oy - 1
+          y0           = floor oy
           y1           = y0 + 1
-          z0           = if oz > 0.0 then floor oz else floor oz - 1
+          z0           = floor oz
           z1           = z0 + 1
           sx           = scurve (ox - fromIntegral x0)
           sy           = scurve (oy - fromIntegral y0)
