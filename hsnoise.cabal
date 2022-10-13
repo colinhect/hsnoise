@@ -1,7 +1,7 @@
 name:               hsnoise
-version:            0.0.2
+version:            0.0.3
 
-cabal-version:      >= 1.2.3
+cabal-version:      >= 1.8
 build-type:         Simple
 
 license:            BSD3
